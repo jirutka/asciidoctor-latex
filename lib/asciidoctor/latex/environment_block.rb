@@ -54,10 +54,12 @@
 require 'asciidoctor'
 require 'asciidoctor/extensions'
 require 'asciidoctor/latex/core_ext/colored_string'
+require 'asciidoctor/latex/logger'
 
 
 module Asciidoctor::LaTeX
-  class EnvironmentBlock < Asciidoctor::Extensions::BlockProcessor
+  class EnvironmentBlock < Asciidoctor::Extensions::
+    include Logger
 
     use_dsl
 
@@ -126,8 +128,8 @@ module Asciidoctor::LaTeX
       end
 
 
-      warn "env_name: #{env_name}".cyan if $VERBOSE
-      warn "end EnvironmentBlock\n".blue if $VERBOSE
+      log.debug "env_name: #{env_name}"
+      log.debug 'end EnvironmentBlock'
 
       if attrs['role'] == 'code'
         create_block parent, :listing, reader.lines, attrs

@@ -10,10 +10,12 @@
 require 'asciidoctor'
 require 'asciidoctor/extensions'
 require 'asciidoctor/latex/core_ext/colored_string'
+require 'asciidoctor/latex/logger'
 
 
 module Asciidoctor::LaTeX
   class ClickBlock < Asciidoctor::Extensions::BlockProcessor
+    include Logger
 
     use_dsl
     # ^^^ don't know what this is.  Could you explain?
@@ -29,7 +31,7 @@ module Asciidoctor::LaTeX
 
     def process parent, reader, attrs
 
-      warn "begin ClickBlock".blue if $VERBOSE
+      log.debug 'begin ClickBlock'
       click_name = attrs["role"]
 
       # Ensure that role is defined
@@ -95,15 +97,15 @@ module Asciidoctor::LaTeX
       attrs['role'] = 'click'
 
 
-      warn "click_name: #{click_name}".cyan if $VERBOSE
-      warn "end Clicklock\n".blue if $VERBOSE
+      log.debug "click_name: #{click_name}"
+      log.debug 'end Clicklock'
 
-      warn "role = #{role}".red
+      log.debug "role = #{role}"
       if role == 'listing'
-        warn "creating listing block".red
+        log.debug 'creating listing block'
         create_block parent, :listing, reader.lines, attrs
       else
-        warn "creating click block".red
+        log.debug 'creating click block'
         create_block parent, :click, reader.lines, attrs
       end
 
